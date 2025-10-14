@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fim do Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_fim/fim.css') }}">
+  <style>
+    .emoji-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:999}
+    .emoji{position:absolute;top:-50px;font-size:2rem;animation:cair linear forwards}
+    @keyframes cair{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  </style>
+</head>
+<body class="body_fim">
+  <div class="container_fim">
+    <div class="meio">
+      <h1>🎉 Fim do Quiz!</h1>
+      <p>Nível: <strong id="nivel">{{ nivel }}</strong></p>
+      <div class="AC">
+        <p>✅ Acertos: <strong>{{ acertos }}</strong></p>
+        <p>❌ Erros: <strong>{{ erros }}</strong></p>
+      </div>
+      <p>🎯 Pontos Totais: <strong>{{ pontos }}</strong></p>
+      <div class="estrelas">
+        {% if not estrelas or estrelas == 0 %}
+          <p>Errou tudo! Precisa estudar mais a tabuada 😅</p>
+        {% else %}
+          {% for i in range(estrelas) %}<span class="estrela">⭐</span>{% endfor %}
+        {% endif %}
+      </div>
+      <a href="/reiniciar" class="reiniciar">🔁 Jogar Novamente</a>
+    </div>
+  </div>
+
+  <!-- 🎵 Áudios -->
+  <audio id="audioAlegria" preload="auto" playsinline src="{{ url_for('static', filename='audio/audio_alegria.mp3') }}"></audio>
+  <audio id="audioVaia"    preload="auto" playsinline src="{{ url_for('static', filename='audio/audio_vaia.mp3') }}"></audio>
+
+  <div class="emoji-container" id="emojiContainer"></div>
+
+  <script>
+    const estrelas = {{ estrelas|default(0)|tojson }};
+    const APP_SOUND_KEY = 'app_sound_enabled';
+
+    const emojiContainer = document.getElementById('emojiContainer');
+    const audioAlegria   = document.getElementById('audioAlegria');
+    const audioVaia      = document.getElementById('audioVaia');
+
+    function soundEnabled() {
+      // padrão 'on' se não houver preferência salva
+      return (localStorage.getItem(APP_SOUND_KEY) ?? 'on') === 'on';
+    }
+
+    function soltarEmojis(emoji) {
+      for (let i = 0; i < 35; i++) {
+        const e = document.createElement('div');
+        e.classList.add('emoji');
+        e.textContent = emoji;
+        e.style.left = Math.random() * 100 + 'vw';
+        e.style.fontSize = (1 + Math.random() * 2) + 'rem';
+        e.style.animationDuration = (2 + Math.random() * 3) + 's';
+        emojiContainer.appendChild(e);
+        setTimeout(() => e.remove(), 5000);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Emojis visuais sempre
+      if (!estrelas || estrelas === 0) {
+        soltarEmojis('😭'); soltarEmojis('😢'); soltarEmojis('💧');
+      } else {
+        soltarEmojis('👏'); soltarEmojis('🎉'); soltarEmojis('✨'); soltarEmojis('🏆');
+      }
+
+      // Silêncio total se o usuário escolheu mudo
+      if (!soundEnabled()) {
+        [audioAlegria, audioVaia].forEach(a => {
+          if (!a) return;
+          a.muted = true;
+          a.volume = 0;
+          try { a.pause(); } catch {}
+        });
+        return;
+      }
+
+      // Tentar tocar o som correspondente
+      try {
+        if (!estrelas || estrelas === 0) {
+          audioVaia.volume = 0.8;
+          await audioVaia.play();
+        } else {
+          audioAlegria.volume = 0.9;
+          await audioAlegria.play();
+        }
+      } catch(e) { /* se bloquear, só ignora o som */ }
+    });
+  </script>
+</body>
+</html>

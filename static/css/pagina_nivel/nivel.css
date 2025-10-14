@@ -1,0 +1,241 @@
+/* ========================= */
+/* 🔧 RESET GERAL */
+/* ========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ========================= */
+/* 🌌 BODY */
+/* ========================= */
+.body_nivel {
+  height: 100vh;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  color: #fff;
+  position: relative;
+  background: radial-gradient(circle at top, #1414ff48, #0b0b15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ========================= */
+/* 🎥 VÍDEO DE FUNDO */
+/* ========================= */
+video#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* ========================= */
+/* 🧭 CONTAINER PRINCIPAL */
+/* ========================= */
+.container_nivel {
+  text-align: center;
+  padding: 3rem 4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  animation: fadeIn 1.2s ease-out;
+  width: 100%;
+  max-width: 550px;
+}
+
+/* ========================= */
+/* 🎯 TÍTULO */
+/* ========================= */
+.h1_nivel {
+  font-size: 2.3rem;
+  margin-bottom: 2.5rem;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  animation: pulse 3s infinite alternate;
+  letter-spacing: 1px;
+  text-shadow: 0 0 18px #ffffff;
+  animation: pulseTitle 2s infinite alternate;
+}
+
+/* ========================= */
+/* 🔘 BOTÕES DE NÍVEL */
+/* ========================= */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.options button {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  color: #fff;
+  background: linear-gradient(90deg, #3a3a98, #6f5de6);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(111, 93, 230, 0.4);
+}
+
+.options button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #6f5de6, #3a3a98);
+  box-shadow: 0 0 20px rgba(111, 93, 230, 0.7);
+}
+.reiniciar {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #fff;
+  color: #2196f3;
+  border-radius: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 25px;
+}
+.reiniciar:hover {
+  background: #2196f3;
+  color: #fff;
+  transform: scale(1.05);
+}
+/* ========================= */
+/* ✨ ANIMAÇÕES */
+/* ========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  from {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  to {
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* ========================= */
+/* 📱 RESPONSIVIDADE */
+/* ========================= */
+
+/* 💻 Notebooks e tablets grandes */
+@media (max-width: 1024px) {
+  .container_nivel {
+    max-width: 900px;
+    max-height: 900px;
+    padding: 2.5rem 3rem;
+  }
+
+  .h1_nivel {
+    font-size: 4.2rem;
+  }
+
+  .options button {
+    font-size: 2.5rem;
+    padding: 0.9rem 1.2rem;
+  }
+}
+
+/* 📱 Tablets médios */
+@media (max-width: 768px) {
+  .container_nivel {
+    width: 85%;
+    padding: 2rem 2.5rem;
+  }
+
+  .h1_nivel {
+    font-size: 1.8rem;
+  }
+
+  .options button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+}
+
+/* 📱 Celulares */
+@media (max-width: 480px) {
+  .container_nivel {
+    width: 90%;
+    padding: 1.8rem 1.5rem;
+    border-radius: 15px;
+  }
+
+  .h1_nivel {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .options button {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+    border-radius: 8px;
+  }
+}
+/* 💻 Notebooks e tablets grandes */
+@media (max-width: 1024px) {
+  
+}
+
+/* 📱 Tablets médios */
+@media (max-width: 768px) {
+  .container_nivel {
+    width: 88%;
+    padding: 2rem 2rem;
+  }
+  .h1_nivel { font-size: 1.7rem; }
+  /* Em tablets, 2 colunas para ficar mais compacto */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .options button { font-size: 1.05rem; padding: 0.85rem; }
+}
+
+/* 📱 Celulares */
+@media (max-width: 480px) {
+  .container_nivel {
+    width: 92%;
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+  }
+  .h1_nivel {
+    font-size: 1.45rem;
+    margin-bottom: 1.25rem;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;   /* volta para 1 coluna */
+    gap: 12px;
+  }
+  .options button {
+    font-size: 1rem;
+    padding: 0.9rem;          /* área de toque confortável */
+    border-radius: 10px;
+  }
+}

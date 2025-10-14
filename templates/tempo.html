@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⏱️ Escolha o Tempo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tempo/tempo.css') }}">
+</head>
+
+<body>
+  <div class="container_tempo">
+    <h1>⏰ Escolha o tempo por pergunta</h1>
+    <form action="{{ url_for('definir_tempo') }}" method="POST">
+      <select name="tempo" id="tempo" required>
+        <option style="background-color: red; color: rgb(0, 0, 0);" value="10">10 segundos</option>
+        <option style="background-color: yellow; color: rgb(0, 0, 0);" value="15">15 segundos</option>
+        <option style="background-color: rgb(222, 160, 46); color: rgb(0, 0, 0);" value="25">25 segundos</option>
+        <option style="background-color: green; color: rgb(0, 0, 0);" value="35">35 segundos</option>
+        <option style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);" value="45">45 segundos</option>
+      </select>
+
+      <button type="submit">Salvar e Continuar ➡️</button>
+    </form>
+  </div>
+
+</body>
+</html>
