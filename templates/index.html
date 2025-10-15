@@ -47,6 +47,27 @@
       <a href="/reiniciar" class="reiniciar">🔄 Reiniciar</a>
     </div>
   </main>
-  <script src="static/js/index.js"></script>
+  <script>   let timeLeft = parseInt("{{ tempo|default(60, true) }}", 10);
+    if (isNaN(timeLeft)) timeLeft = 60;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const timeDisplay = document.getElementById('time');
+      const form = document.getElementById('formResposta');
+      if (!timeDisplay || !form) return;
+
+      timeDisplay.textContent = timeLeft;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        timeDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          const t = document.getElementById('timeout');
+          if (t) t.value = '1';
+          form.submit();
+        }
+      }, 1000);
+    });</script>
 </body>
 </html>
