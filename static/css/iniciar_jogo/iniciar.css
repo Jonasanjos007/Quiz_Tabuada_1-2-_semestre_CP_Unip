@@ -129,6 +129,253 @@ h1:nth-of-type(2) {
   position: relative;
   z-index: 1;
 }
+    /* ===== BOTÃO FLUTUANTE (MANUAL) ===== */
+    .btn-manual {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0b1020;
+      background: linear-gradient(135deg, #00e5ff 0%, #3b82f6 60%, #7c3aed 110%);
+      border: none;
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(59, 130, 246, .35), 0 0 24px rgba(0, 229, 255, .35);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .btn-manual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, .35) 20%, transparent 40%);
+      transform: translateX(-120%);
+      transition: transform .7s ease;
+    }
+
+    .btn-manual:hover::after {
+      transform: translateX(120%);
+    }
+
+    .btn-manual:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 16px 34px rgba(59, 130, 246, .45), 0 0 36px rgba(0, 229, 255, .5);
+    }
+
+    .btn-manual:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width:480px) {
+      .btn-manual {
+        bottom: 16px;
+        right: 16px;
+        padding: 12px 18px;
+        font-size: .9rem;
+        border-radius: 12px
+      }
+    }
+
+    /* ===== BOTÃO FLUTUANTE (SOM) ===== */
+    .botao-mudo {
+      position: fixed;
+      bottom: 92px;
+      right: 28px;
+      width: 60px;
+      height: 60px;
+      font-size: 40px;
+      line-height: 55px;
+      text-align: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      color: #0b1020;
+      border: 2px solid #000;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .25);
+      transition: transform .15s ease;
+    }
+
+    .botao-mudo:hover {
+      transform: translateY(-1px);
+    }
+
+    @media (max-width:480px) {
+      .botao-mudo {
+        bottom: 78px;
+        right: 16px
+      }
+    }
+
+    /* ===== OVERLAY DE PERMISSÃO DE SOM ===== */
+    .sound-gate {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(2px);
+    }
+
+    .sound-card {
+      background: #0b1020;
+      color: #eaf6ff;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 16px;
+      padding: 18px 20px;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .45);
+    }
+
+    .sound-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.1rem
+    }
+
+    .sound-card p {
+      margin: 0 0 16px;
+      opacity: .9
+    }
+
+    .sound-cta {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      color: #0b1020;
+      background: linear-gradient(135deg, #a7f3d0 0%, #34d399 80%);
+    }
+
+    .sound-cta.secondary {
+      background: linear-gradient(135deg, #e5e7eb 0%, #cbd5e1 80%);
+      color: #0b1020;
+    }
+
+    .sound-cta.secondary:hover {
+      filter: brightness(1.02);
+    }
+
+    /* ===== CONTAINER DO BOTÃO ===== */
+    .botao-nuvem {
+      position: fixed;
+      /* Fixa na tela */
+      bottom: 28px;
+      /* Distância da parte inferior */
+      left: 28px;
+      /* Encostado à esquerda */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+
+    /* ===== BOTÃO CIRCULAR ===== */
+    .btn-duvida {
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle at 30% 30%, #00e5ff, #0077ff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-duvida:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.8);
+    }
+
+    /* ===== NUVEM ===== */
+    .nuvem-texto {
+      position: absolute;
+      left: 110%;
+      /* Muda para o lado direito do botão */
+      top: 10%;
+      transform: translateY(-50%);
+      background: #ffffff;
+      color: #0077ff;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 6px 7px;
+      border-radius: 40px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      animation: flutuarNuvem 3s ease-in-out infinite;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* ===== ANIMAÇÃO DA NUVEM ===== */
+    @keyframes flutuarNuvem {
+      0% {
+        opacity: 0;
+        transform: translate(10px, -50%) scale(0.9);
+      }
+
+      30% {
+        opacity: 1;
+        transform: translate(0px, -52%) scale(1);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translate(5px, -54%) scale(1.05);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(15px, -55%) scale(0.95);
+      }
+    }
+
+    /* ===== BOLHAS DA NUVEM ===== */
+    .nuvem-texto::before,
+    .nuvem-texto::after {
+      content: "";
+      position: absolute;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .nuvem-texto::before {
+      width: 15px;
+      height: 8px;
+      left: -10px;
+      top: 50%;
+      box-shadow: -10px 3px 0 0 #ffffff;
+    }
+
+    .nuvem-texto::after {
+      width: 10px;
+      height: 10px;
+      left: -18px;
+      top: 60%;
+    }
+
+    /* ===== NUVEM ===== */
+    @media (max-width:480px) {
+      .botao-nuvem {
+        bottom: 16px;
+        left: 16px;
+      }
+    }
 .page .card { position: relative; }
 
 /* =========================

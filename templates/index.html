@@ -5,126 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz de Matemática</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_index/index.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imagens/logo.png') }}" type="image/png">
 </head>
-
 <body>
   <!-- 🎬 Vídeo de fundo -->
   <video id="bg-video" autoplay muted loop>
     <source src="{{ url_for('static', filename='video/video_animado.mp4') }}" type="video/mp4">
   </video>
-
   <!-- 🎵 Música de fundo -->
   <audio id="bgmusic" preload="auto" loop playsinline>
     <source src="{{ url_for('static', filename='audio/audio_relogio.mp3') }}" type="audio/mpeg">
   </audio>
-
   <main class="body">
     <div class="container">
       <h1>🧮 Quiz de Matemática</h1>
-
       <div id="timer">
         <p class="tempo">⏳ Tempo restante: <span id="time">{{ tempo }}</span>s</p>
       </div>
-
       <div class="status">
         <p>Pergunta <strong>{{ num_pergunta }}</strong> / 10</p>
       </div>
-
       <div class="pontuacao">
         <p>🎯 Pontos: <strong id="pontos">{{ pontos }}</strong></p>
         <p>Nível: <strong id="nivel">{{ nivel }}</strong></p>
       </div>
-
       <div class="question">
         <h2>Quanto é <span>{{ pergunta.num1 }}</span> {{ pergunta.operador }} <span>{{ pergunta.num2 }}</span> ?</h2>
       </div>
-
       {% if mensagem %}
         <div class="mensagem">{{ mensagem }}</div>
       {% endif %}
-
       <form id="formResposta" action="{{ url_for('responder') }}" method="POST" class="options">
         <input type="hidden" id="timeout" name="timeout" value="0">
         {% for opcao in pergunta.opcoes %}
           <button type="submit" name="resposta" value="{{ opcao }}">{{ opcao }}</button>
         {% endfor %}
       </form>
-
       <div class="status_ae">
         <p>✅ Acertos: {{ acertos }} | ❌ Erros: {{ erros }}</p>
       </div>
-
       <a href="/reiniciar" class="reiniciar">🔄 Reiniciar</a>
     </div>
   </main>
-
-  <!-- ⏰ Timer -->
-  <script>
-    let timeLeft = parseInt("{{ tempo|default(60, true) }}", 10);
-    if (isNaN(timeLeft)) timeLeft = 60;
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const timeDisplay = document.getElementById('time');
-      const form = document.getElementById('formResposta');
-      if (!timeDisplay || !form) return;
-
-      timeDisplay.textContent = timeLeft;
-
-      const timer = setInterval(() => {
-        timeLeft--;
-        timeDisplay.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          const t = document.getElementById('timeout');
-          if (t) t.value = '1';
-          form.submit();
-        }
-      }, 1000);
-    });
-  </script>
-
-  <!-- 🎵 Música com preferência global -->
-  <script>
-    const APP_SOUND_KEY = 'app_sound_enabled';
-    const musica = document.getElementById('bgmusic');
-
-    // Função auxiliar
-    function soundEnabled() {
-      return (localStorage.getItem(APP_SOUND_KEY) ?? 'on') === 'on';
-    }
-
-    // Quando carregar a página
-    window.addEventListener('DOMContentLoaded', async () => {
-      if (!musica) return;
-
-      // Se estiver mudo globalmente
-      if (!soundEnabled()) {
-        musica.muted = true;
-        musica.volume = 0;
-        try { musica.pause(); } catch {}
-        return;
-      }
-
-      try {
-        musica.volume = 0.8;
-        await musica.play();
-      } catch (e) {
-        // Caso o navegador bloqueie autoplay
-      }
-    });
-  </script>
-
-  <style>
-    video#bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
-  </style>
+  <script src="static/js/index.js"></script>
 </body>
 </html>

@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Escolha o Nível</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_nivel/nivel.css') }}">
-</head>
-<body class="body_nivel">
 
+<head>
+  <meta charset="UTF-8">
+  <title>Escolha o Nível</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_nivel/nivel.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imagens/logo.png') }}" type="image/png">
+</head>
+
+<body class="body_nivel">
   <!-- Vídeo de fundo -->
   <video id="bg-video" autoplay muted loop playsinline>
     <source src="{{ url_for('static', filename='video/vd.mp4') }}" type="video/mp4">
   </video>
-
   <!-- Música de fundo -->
   <audio id="bgmusic" autoplay loop preload="auto" playsinline>
     <source src="{{ url_for('static', filename='audio/audio_nivel.mp3') }}" type="audio/mpeg">
   </audio>
-
   <!-- Botão de mute -->
   <button id="toggleMute" class="botao-mudo" aria-label="Alternar som">🔊</button>
-
   <div class="container_nivel">
     <h1 class="h1_nivel">🎯 Escolha o Nível de Dificuldade</h1>
     <form action="{{ url_for('iniciar') }}" method="POST" class="options">
@@ -29,49 +28,6 @@
       <button type="submit" name="nivel" value="Extremo">🔴 Extremo:Tabuada de 3 Algarismo (+,-,/,*) </button>
     </form>
   </div>
-
-<script>
-  const musica = document.getElementById('bgmusic');
-  const botao  = document.getElementById('toggleMute');
-  const APP_SOUND_KEY = 'app_sound_enabled';
-  const VOLUME = 0.35;
-
-  // estado inicial baseado na preferência global
-  let enabled = (localStorage.getItem(APP_SOUND_KEY) ?? 'on') === 'on';
-  musica.volume = VOLUME;
-  musica.muted  = !enabled;
-
-  // tenta tocar; se bloquear, vida que segue
-  try { musica.play().catch(()=>{}); } catch(e){}
-
-  botao.textContent = musica.muted ? '🔇' : '🔊';
-
-  // toggle que atualiza a preferência global
-  botao.addEventListener('click', async () => {
-    if (musica.paused) { try { await musica.play(); } catch(e){} }
-    musica.muted = !musica.muted;
-    enabled = !musica.muted;
-    localStorage.setItem(APP_SOUND_KEY, enabled ? 'on' : 'off');
-    botao.textContent = musica.muted ? '🔇' : '🔊';
-  });
-</script>
-
-
-<style>
-  .botao-mudo {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 55px;
-    height: 55px;
-    font-size: 25px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.8);
-    border: 2px solid #000;
-    cursor: pointer;
-    z-index: 999;
-  }
-</style>
-
+  <script src="static/js/nivel.js"></script>
 </body>
 </html>

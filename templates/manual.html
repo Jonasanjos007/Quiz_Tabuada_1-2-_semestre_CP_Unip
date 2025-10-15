@@ -5,308 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Manual — Quiz Tabuada</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_manual/manual.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='imagens/logo.png') }}" type="image/png">
 
-    <style>
-        :root {
-            --bg1: #0b0b15;
-            --bg2: #151528;
-            --card: #191928;
-            --accent: #00e5ff;
-            --accent-2: #0077ff;
-            --gold: #ffeb3b;
-            --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
-        }
-
-        * {
-            box-sizing: border-box
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            font-family: var(--font-sans);
-            background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-            color: #e8f6ff;
-            scroll-behavior: smooth
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--accent)
-        }
-
-        img {
-            max-width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, .4)
-        }
-
-        h1,
-        h2 {
-            margin-top: 0
-        }
-
-        /* Layout */
-        #menuBtn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
-            color: #000;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 1rem;
-            z-index: 1000
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px
-        }
-
-        /* Sidebar */
-        nav.sidebar {
-            background: linear-gradient(180deg, rgba(255, 255, 255, .015), rgba(0, 0, 0, .08));
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
-            height: max-content;
-            position: sticky;
-            top: 20px
-        }
-
-        .sidebar h3 {
-            margin-top: 0;
-            font-size: 1.1rem;
-            color: var(--gold)
-        }
-
-        .toc {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 10px
-        }
-
-        .toc a {
-            padding: 8px 10px;
-            border-radius: 10px;
-            color: #dff8ff
-        }
-
-        .toc a:hover {
-            background: rgba(0, 0, 0, .3)
-        }
-
-        /* Conteúdo */
-        .content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 900px;
-            margin: 0 auto
-        }
-
-        section.card {
-            padding: 20px;
-            border-radius: 12px;
-            background: var(--card);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, .6);
-            scroll-margin-top: 80px
-        }
-
-        section.card h2 {
-            color: var(--accent)
-        }
-
-        ul.rules {
-            margin: 8px 0 0 18px
-        }
-
-        ul.rules li {
-            margin: 8px 0
-        }
-
-        .kbd {
-            background: #071722;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, .03);
-            font-weight: 700;
-            color: var(--accent)
-        }
-
-        /* Botões utilitários */
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap
-        }
-
-        .muted-btn {
-            background: #0f1a22;
-            border: 1px solid rgba(255, 255, 255, .08);
-            color: #d9f2ff;
-            padding: 10px 14px;
-            border-radius: 10px;
-            cursor: pointer
-        }
-
-        .muted-btn:hover {
-            filter: brightness(1.08)
-        }
-
-        .cta {
-            display: inline-block;
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: 0;
-            cursor: pointer;
-            background: linear-gradient(90deg, #00e5ff, #0077ff);
-            color: #001;
-            font-weight: 800
-        }
-
-        footer {
-            margin-top: 30px;
-            color: #bfeeff;
-            opacity: .9;
-            font-size: .95rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px
-        }
-
-        /* Emojis Confete */
-        .emoji-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 500
-        }
-
-        .emoji {
-            position: absolute;
-            top: -50px;
-            font-size: 1.8rem;
-            animation: cair linear forwards
-        }
-
-        @keyframes cair {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0
-            }
-        }
-
-        /* Responsivo */
-        @media (max-width:1000px) {
-            .layout {
-                grid-template-columns: 1fr;
-                padding-top: 70px
-            }
-
-            nav.sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 260px;
-                transform: translateX(-270px);
-                transition: transform .3s ease;
-                z-index: 999
-            }
-
-            nav.sidebar.open {
-                transform: translateX(0)
-            }
-
-            #menuBtn {
-                display: block
-            }
-        }
-
-        /* Etiquetas visuais */
-        .tag {
-            display: inline-block;
-            margin: 0 6px 8px 0;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: #0d2330;
-            border: 1px solid rgba(255, 255, 255, .08);
-            font-size: .85rem;
-            color: #cfefff
-        }
-
-        html,
-        body {
-            color: var(--text);
-        }
-
-        a {
-            color: var(--link);
-        }
-
-        nav.sidebar {
-            background:  #0b0b15;
-        }
-
-        .toc a {
-            color: #fff;
-        }
-
-        .content section.card {
-            box-shadow: 0 8px 30px rgba(var(--shadow-rgb), 0.6);
-        }
-
-        img {
-            box-shadow: 0 0 20px rgba(var(--shadow-rgb), 0.4);
-        }
-
-        footer {
-            color: var(--muted-text);
-        }
-
-        .muted-btn {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border: 1px solid var(--btn-border);
-            padding: 10px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        :root {
-            /* já existem: --bg1, --bg2, --card, --accent, --accent-2, --gold, --font-sans */
-            --text: #e8f6ff;
-            --muted-text: #bfeeff;
-            --link: var(--accent);
-            --toc-link: #dff8ff;
-
-            --btn-bg: #0f1a22;
-            --btn-text: #d9f2ff;
-            --btn-border: rgba(255, 255, 255, 0.08);
-
-            --sidebar-grad-1: rgba(255, 255, 255, 0.015);
-            --sidebar-grad-2: rgba(0, 0, 0, 0.08);
-
-            --shadow-rgb: 0, 0, 0;
-            /* para controlar intensidade de sombra por tema */
-        }
-    </style>
 </head>
-
 <body>
     <button id="menuBtn">☰ Menu</button>
     <div class="emoji-container" id="emojiContainer"></div>
@@ -325,7 +27,6 @@
                 <a href="#navegacao">6. Navegação</a>
             </div>
         </nav>
-
         <!-- Conteúdo -->
         <div class="content">
             <header style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
@@ -337,7 +38,6 @@
                     <button class="muted-btn" id="toggleTheme">🌙 Tema</button>
                 </div>
             </header>
-
             <!-- 1. Como acessar -->
             <section id="acessar" class="card">
                 <h2>1. Como acessar</h2>
@@ -347,21 +47,18 @@
                         🚀 Abrir aplicação
                     </a>
                 </p>
-
                 <!-- QR Code local se existir, senão fallback -->
                 <picture>
                     <source srcset="{{ url_for('static', filename='imagens/QRCode.png') }}" />
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Ftabuada-atualizaada.onrender.com%2F"
                         alt="QR Code — Acesso ao Quiz" loading="lazy">
                 </picture>
-
                 <div style="margin-top:12px">
                     <span class="tag">🔢 Matemática</span>
                     <span class="tag">🧠 Exercício mental</span>
                     <span class="tag">🎯 Prática diária</span>
                 </div>
             </section>
-
             <!-- 2. Introdução (motivação) -->
             <section id="introducao" class="card">
                 <h2>2. Introdução</h2>
@@ -379,11 +76,9 @@
                     soft skills (trabalho em equipe, comunicação, liderança, gestão de projetos, resolução de problemas
                     e planejamento).
                 </p>
-
                 <img src="https://cdn.pixabay.com/photo/2017/01/31/13/14/math-2029289_960_720.png"
                     alt="Introdução — Matemática divertida">
             </section>
-
             <!-- 2.2 Como foi construído -->
             <section id="construcao" class="card">
                 <h2>2.2 Como o aplicativo foi construído</h2>
@@ -425,10 +120,8 @@
                     (o Python, o HTML e o CSS) e garante que, quando você digitar o
                     endereço do quiz no seu celular ou computador, o aplicativo esteja
                     lá, funcionando 24 horas por dia para você jogar.
-
                 </p>
             </section>
-
             <!-- 3. Recursos & níveis -->
             <section id="recursos" class="card">
                 <h2>3. Recursos & níveis</h2>
@@ -588,112 +281,8 @@
             </footer>
         </div>
     </div>
+  <script src="static/js/manual.js"></script>
 
-    <script>
-        // ===== MENU LATERAL =====
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.getElementById('menuBtn');
-        menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-        document.querySelectorAll('.toc a').forEach(a => {
-            a.addEventListener('click', e => {
-                e.preventDefault();
-                const id = a.getAttribute('href').slice(1);
-                document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-                sidebar.classList.remove('open');
-            });
-        });
-
-        // ===== Botões =====
-        document.getElementById('printBtn').addEventListener('click', () => window.print());
-        document.getElementById('scrollTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-        // ===== Confete =====
-        const emojiContainer = document.getElementById('emojiContainer');
-        function soltarEmojis(emoji, count = 25) {
-            for (let i = 0; i < count; i++) {
-                const e = document.createElement('div');
-                e.className = 'emoji'; e.textContent = emoji;
-                e.style.left = Math.random() * 100 + 'vw';
-                e.style.fontSize = (16 + Math.random() * 28) + 'px';
-                e.style.animationDuration = (2 + Math.random() * 3) + 's';
-                emojiContainer.appendChild(e);
-                setTimeout(() => e.remove(), 6000);
-            }
-        }
-        document.getElementById('playConfetti').addEventListener('click', () => {
-            soltarEmojis('🎉', 20); soltarEmojis('✨', 10); soltarEmojis('🏆', 10);
-        });
-
-  // Helper para setar múltiplas CSS vars
-  function setVars(map){
-    for (const [k,v] of Object.entries(map)) {
-      document.documentElement.style.setProperty(k, v);
-    }
-  }
-
-  let dark = true;
-
-  function applyDark(){
-    setVars({
-      '--bg1': '#0b0b15',
-      '--bg2': '#151528',
-      '--card': '#191928',
-      '--accent': '#00e5ff',
-
-      '--text': '#e8f6ff',
-      '--muted-text': '#bfeeff',
-      '--link': '#00e5ff',
-      '--toc-link': '#dff8ff',
-
-      '--btn-bg': '#0f1a22',
-      '--btn-text': '#d9f2ff',
-      '--btn-border': 'rgba(255,255,255,0.08)',
-
-      '--sidebar-grad-1': 'rgba(255,255,255,0.015)',
-      '--sidebar-grad-2': 'rgba(0,0,0,0.08)',
-
-      '--shadow-rgb': '0,0,0'
-    });
-    document.body.style.color = 'var(--text)';
-  }
-
-  function applyLight(){
-    setVars({
-      '--bg1': '#f6f9ff',
-      '--bg2': '#dff4ff',
-      '--card': '#ffffff',
-      '--accent': '#0056ff',
-
-      '--text': '#0f2233',
-      '--muted-text': '#385b6e',
-      '--link': '#0056ff',
-      '--toc-link': '#0f2233',
-
-      '--btn-bg': '#eef5ff',
-      '--btn-text': '#0f2233',
-      '--btn-border': '#c8dbff',
-
-      '--sidebar-grad-1': 'rgba(0,0,0,0.02)',
-      '--sidebar-grad-2': 'rgba(0,0,0,0.06)',
-
-      '--shadow-rgb': '0,0,0' /* mantém sombra suave */
-    });
-    document.body.style.color = 'var(--text)';
-  }
-
-  // aplica tema inicial escuro
-  applyDark();
-
-  document.getElementById('toggleTheme').addEventListener('click', () => {
-    dark = !dark;
-    if (dark) applyDark(); else applyLight();
-  });
-
-
-
-        // confete na abertura
-        window.addEventListener('load', () => setTimeout(() => soltarEmojis('✨', 15), 600));
-    </script>
 </body>
 
 </html>

@@ -92,6 +92,19 @@ video#bg-video {
   letter-spacing: 0.5px;
   box-shadow: 0 0 10px rgba(111, 93, 230, 0.4);
 }
+ .botao-mudo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    font-size: 25px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid #000;
+    cursor: pointer;
+    z-index: 999;
+  }
 
 .options button:hover {
   transform: scale(1.05);
