@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz de Matemática</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/pagina_index/index.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='imagens/logo.png') }}" type="image/png">
+  <link rel="icon" href="{{ url_for('static', filename='imagens/logo.png') }}" type="image/png">
 </head>
+
 <body>
   <!-- 🎬 Vídeo de fundo -->
   <video id="bg-video" autoplay muted loop>
@@ -33,12 +35,12 @@
         <h2>Quanto é <span>{{ pergunta.num1 }}</span> {{ pergunta.operador }} <span>{{ pergunta.num2 }}</span> ?</h2>
       </div>
       {% if mensagem %}
-        <div class="mensagem">{{ mensagem }}</div>
+      <div class="mensagem">{{ mensagem }}</div>
       {% endif %}
       <form id="formResposta" action="{{ url_for('responder') }}" method="POST" class="options">
         <input type="hidden" id="timeout" name="timeout" value="0">
         {% for opcao in pergunta.opcoes %}
-          <button type="submit" name="resposta" value="{{ opcao }}">{{ opcao }}</button>
+        <button type="submit" name="resposta" value="{{ opcao }}">{{ opcao }}</button>
         {% endfor %}
       </form>
       <div class="status_ae">
@@ -47,7 +49,8 @@
       <a href="/reiniciar" class="reiniciar">🔄 Reiniciar</a>
     </div>
   </main>
-  <script>   let timeLeft = parseInt("{{ tempo|default(60, true) }}", 10);
+  <script>
+    let timeLeft = parseInt("{{ tempo|default(60, true) }}", 10);
     if (isNaN(timeLeft)) timeLeft = 60;
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -70,4 +73,5 @@
       }, 1000);
     });</script>
 </body>
+
 </html>

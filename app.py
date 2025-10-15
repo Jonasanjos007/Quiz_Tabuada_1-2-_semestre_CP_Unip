@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, send_from_directory
 import random
 import os
 
@@ -6,9 +6,9 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'segredo_123'
 
 
-import random
-from flask import session
-
+# ============================================
+# 🔢 Função de gerar perguntas
+# ============================================
 def gerar_pergunta():
     """Gera uma pergunta de acordo com o nível escolhido (tabuada adaptada e corrigida para divisões)."""
     nivel_raw = session.get('nivel', 'facil')
@@ -38,11 +38,9 @@ def gerar_pergunta():
             resultado = num1 * num2
 
         elif operador == '/':
-            # Garante que o resultado e os números fiquem dentro de 1–9
             num2 = random.randint(1, 9)
             resultado = random.randint(1, 9)
             num1 = resultado * num2
-            # Ajusta se exceder o limite de 9
             while num1 > 9:
                 resultado = random.randint(1, 9)
                 num1 = resultado * num2
@@ -68,7 +66,6 @@ def gerar_pergunta():
             resultado = num1 * num2
 
         elif operador == '/':
-            # Garante resultado e dividendos dentro de 10–20
             num2 = random.randint(1, 9)
             resultado = random.randint(1, 9)
             num1 = resultado * num2
@@ -99,24 +96,23 @@ def gerar_pergunta():
         num1 = num2 = resultado = 0
 
         if operador == '+':
-            num1 = random.randint(100,1000)
+            num1 = random.randint(100, 1000)
             num2 = random.randint(100, 1000)
             resultado = num1 + num2
 
         elif operador == '-':
-            num1 = random.randint(100,1000)
+            num1 = random.randint(100, 1000)
             num2 = random.randint(1, num1)
             resultado = num1 - num2
 
         elif operador == '*':
-            num1 = random.randint(100,1000)
+            num1 = random.randint(100, 1000)
             num2 = random.randint(1, 10)
             resultado = num1 * num2
 
         elif operador == '/':
-            # Garante que num1 fique entre 71 e 99
-            num2 = random.randint(2, 10 )
-            resultado = random.randint(7, 100)  # força resultados plausíveis
+            num2 = random.randint(2, 10)
+            resultado = random.randint(7, 100)
             num1 = resultado * num2
             while num1 < 100 or num1 > 1000:
                 num2 = random.randint(2, 10)
@@ -129,7 +125,6 @@ def gerar_pergunta():
         operador = '+'
         resultado = num1 + num2
 
-    # === GERA OPÇÕES DE RESPOSTA ===
     opcoes = {resultado}
     spread = max(3, int(abs(resultado) * 0.2))
 
@@ -151,11 +146,13 @@ def gerar_pergunta():
     }
 
 
+# ============================================
+# 🧠 ROTAS DO JOGO
+# ============================================
+
 @app.route('/')
 def inicio():
     return render_template('iniciar_jogo.html')
-
-
 
 @app.route('/nivel')
 def escolher_nivel():
@@ -163,10 +160,9 @@ def escolher_nivel():
 
 @app.route('/tempo')
 def escolher_tempo():
-    # Se o nível ainda não foi escolhido, volta para /nivel
     if 'nivel' not in session:
         return redirect('/nivel')
-    return render_template('tempo.html')  # seu HTML da página de tempo
+    return render_template('tempo.html')
 
 @app.route('/iniciar', methods=['POST'])
 def iniciar():
@@ -176,7 +172,7 @@ def iniciar():
     session['pontos'] = 0
     session['pergunta'] = 1
     session['pergunta_atual'] = gerar_pergunta()
-    return redirect('/tempo')   # 👈 aqui é o pulo do gato
+    return redirect('/tempo')
 
 @app.route('/fim')
 def fim():
@@ -191,7 +187,7 @@ def jogo():
         return redirect('/nivel')
 
     tempo = session.get('tempo_por_pergunta', 30)
-    msg = session.pop('flash_msg', None)  # lê e remove
+    msg = session.pop('flash_msg', None)
 
     return render_template(
         'index.html',
@@ -205,7 +201,6 @@ def jogo():
         mensagem=msg
     )
 
-
 @app.route('/responder', methods=['POST'])
 def responder():
     estourou_tempo = request.form.get('timeout') == '1'
@@ -216,9 +211,7 @@ def responder():
     session.setdefault('pergunta', 1)
     session.setdefault('nivel', 'leve')
 
-    valores = {'Facil': 5, 'medio': 7, 'dificil': 9, 'Extremo': 10}
-
-    # garante que existe pergunta_atual
+    valores = {'facil': 5, 'medio': 7, 'dificil': 9, 'extremo': 10}
     if 'pergunta_atual' not in session:
         session['pergunta_atual'] = gerar_pergunta()
 
@@ -228,13 +221,11 @@ def responder():
         session['erros'] += 1
         mensagem = f"⏱️ Tempo esgotado! A resposta correta era {correto}."
     else:
-        # parse seguro da resposta para evitar 500
-        resposta_raw = request.form.get('resposta')
         try:
-            resposta = int(resposta_raw)
-        except (TypeError, ValueError):
+            resposta = int(request.form.get('resposta', 0))
+        except ValueError:
             session['flash_msg'] = "Selecione uma alternativa."
-            return redirect(url_for('jogo'))  # ou redirect('/jogo')
+            return redirect(url_for('jogo'))
 
         if resposta == correto:
             session['acertos'] += 1
@@ -247,40 +238,28 @@ def responder():
 
     session['pergunta'] += 1
 
-    # Fim do quiz?
     if session['pergunta'] > 10:
         acertos = session['acertos']
         erros = session['erros']
         pontos = session['pontos']
         nivel = session['nivel']
 
-        if acertos == 1: estrelas = 1
-        elif acertos == 2: estrelas = 2
-        elif 3 <= acertos <= 4: estrelas = 3
-        elif acertos == 5: estrelas = 4
-        elif acertos == 6: estrelas = 5
-        elif 7 <= acertos <= 8: estrelas = 6
-        elif 9 <= acertos <= 10: estrelas = 7
-        else: estrelas = 0
+        if acertos <= 1: estrelas = 1
+        elif acertos <= 3: estrelas = 3
+        elif acertos <= 5: estrelas = 4
+        elif acertos <= 8: estrelas = 6
+        else: estrelas = 7
     
         return render_template('fim.html', acertos=acertos, erros=erros, pontos=pontos, nivel=nivel, estrelas=estrelas)
 
-    # Próxima pergunta e mensagem via sessão
     session['pergunta_atual'] = gerar_pergunta()
     session['flash_msg'] = mensagem
-    return redirect(url_for('jogo'))  # ou redirect('/jogo')
-
-    # Próxima pergunta e mensagem via sessão
-    session['pergunta_atual'] = gerar_pergunta()
-    session['flash_msg'] = mensagem  # guarda a mensagem
-    return redirect(url_for('jogo'))  # << PRG: novo GET em /jogo
-
+    return redirect(url_for('jogo'))
 
 
 @app.route('/definir_tempo', methods=['POST'])
 def definir_tempo():
     session['tempo_por_pergunta'] = int(request.form.get('tempo', 60))
-    # inicia estruturas se ainda não existirem
     session.setdefault('acertos', 0)
     session.setdefault('erros', 0)
     session.setdefault('pontos', 0)
@@ -288,14 +267,6 @@ def definir_tempo():
         session['pergunta'] = 1
         session['pergunta_atual'] = gerar_pergunta()
     return redirect('/jogo')
-
-
-@app.route('/estrelas2', methods=['POST'])
-def estrela2():
-    acertos = session['acertos']
-    if acertos == 0:
-        estrelas = "<p>Errou Tudo Precisa Estudar Mais</p>"
-        return estrelas 
 
 @app.route('/reiniciar')
 def reiniciar():
@@ -310,5 +281,26 @@ def manual():
 def hora_de_praticar():
     return render_template('horadepraticar.html')
 
+
+# ============================================
+# 📱 ROTAS DO PWA
+# ============================================
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('static', 'manifest.json')
+
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('static', 'service-worker.js')
+
+@app.route('/logo.png')
+def logo():
+    return send_from_directory('static/imagens', 'logo.png')
+
+
+# ============================================
+# 🚀 EXECUÇÃO
+# ============================================
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=10000, debug=True)
