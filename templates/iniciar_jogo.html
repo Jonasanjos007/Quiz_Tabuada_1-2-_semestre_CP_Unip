@@ -68,69 +68,84 @@
 
 
   <script>
-    let deferredPrompt;
-    const installButton = document.getElementById('installButton');
+  let deferredPrompt;
+  const installButton = document.getElementById('installButton');
 
-    // ✅ Detecta se é iPhone/iPad (Safari)
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  // ✅ Detecta se é iPhone/iPad (Safari)
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    // --- Caso seja iPhone, mostra mensagem personalizada ---
-    if (isIOS && !isInStandalone) {
-      const msg = document.createElement('div');
-      msg.innerHTML = `
-    👉 Para instalar este app:<br>
-    <b>1.</b> Toque em <b>Compartilhar</b> (ícone com seta ⬆️)<br>
-    <b>2.</b> Escolha <b>"Adicionar à Tela de Início"</b>
-  `;
-      msg.style = `
-    position: fixed;
-    bottom: 20px;
-    left: 10px;
-    right: 10px;
-    background: #151528;
-    color: white;
-    border-radius: 14px;
-    padding: 12px;
-    text-align: center;
-    font-size: 15px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    z-index: 9999;
-  `;
-      document.body.appendChild(msg);
+  // --- Caso seja iPhone, mostra mensagem personalizada ---
+  if (isIOS && !isInStandalone) {
+    const msg = document.createElement('div');
+    msg.innerHTML = `
+      👉 Para instalar este app:<br>
+      <b>1.</b> Toque em <b>Compartilhar</b> (ícone com seta ⬆️)<br>
+      <b>2.</b> Escolha <b>"Adicionar à Tela de Início"</b>
+    `;
+    msg.style = `
+      position: fixed;
+      bottom: 20px;
+      left: 10px;
+      right: 10px;
+      background: #151528;
+      color: white;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      font-size: 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      z-index: 9999;
+    `;
+    document.body.appendChild(msg);
+  }
+
+  // --- Caso seja Android ou Desktop ---
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('📲 beforeinstallprompt detectado!');
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.style.display = 'block'; // mostra botão
+  });
+
+  // Quando o usuário clicar no botão
+  installButton.addEventListener('click', async () => {
+    installButton.style.display = 'none';
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Resultado da instalação:', outcome);
+      deferredPrompt = null;
     }
+  });
 
-    // --- Caso seja Android ou Desktop ---
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('📲 beforeinstallprompt detectado!');
-      e.preventDefault();
-      deferredPrompt = e;
-      installButton.style.display = 'block'; // mostra botão
+  // Some automaticamente quando o app for instalado
+  window.addEventListener('appinstalled', () => {
+    console.log('✅ App instalado!');
+    installButton.style.display = 'none';
+    localStorage.setItem('pwa_installed', 'true');
+  });
+
+  // Esconde o botão se já estiver instalado
+  if (localStorage.getItem('pwa_installed') === 'true' || isInStandalone) {
+    installButton.style.display = 'none';
+  }
+</script>
+
+<!-- 🔧 REGISTRO DO SERVICE WORKER (ADICIONE ESTE TRECHO ABAIXO) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/service-worker.js')
+        .then(() => console.log('✅ Service Worker registrado com sucesso!'))
+        .catch(err => console.error('❌ Erro ao registrar Service Worker:', err));
     });
+  }
+</script>
 
-    // Quando o usuário clicar no botão
-    installButton.addEventListener('click', async () => {
-      installButton.style.display = 'none';
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('Resultado da instalação:', outcome);
-        deferredPrompt = null;
-      }
-    });
+<script src="static/js/iniciar.js"></script>
 
-    // Some automaticamente quando o app for instalado
-    window.addEventListener('appinstalled', () => {
-      console.log('✅ App instalado!');
-      installButton.style.display = 'none';
-      localStorage.setItem('pwa_installed', 'true');
-    });
-
-    // Esconde o botão se já estiver instalado
-    if (localStorage.getItem('pwa_installed') === 'true' || isInStandalone) {
-      installButton.style.display = 'none';
-    }
-  </script>
 
 
   <script src="static/js/iniciar.js"></script>
