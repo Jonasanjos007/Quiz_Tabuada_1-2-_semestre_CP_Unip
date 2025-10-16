@@ -35,6 +35,23 @@
         <h1>🎯 Quiz da Tabuada 🎯</h1>
 
         <button id="iniciar">Iniciar Jogo</button>
+        <button id="installButton" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 20px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: none;
+  z-index: 9999;
+">
+          📲 Baixar App
+        </button>
         <div class="arrow">⬆️</div>
       </div>
     </div>
@@ -48,6 +65,73 @@
     <div class="nuvem-texto" id="praticar">Vamos Praticar?</div>
 
   </div>
+  <!-- BOTÃO DE INSTALAÇÃO -->
+
+
+  <script>
+    let deferredPrompt;
+    const installButton = document.getElementById('installButton');
+
+    // ✅ Detecta se é iPhone/iPad (Safari)
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // --- Caso seja iPhone, mostra mensagem personalizada ---
+    if (isIOS && !isInStandalone) {
+      const msg = document.createElement('div');
+      msg.innerHTML = `
+    👉 Para instalar este app:<br>
+    <b>1.</b> Toque em <b>Compartilhar</b> (ícone com seta ⬆️)<br>
+    <b>2.</b> Escolha <b>"Adicionar à Tela de Início"</b>
+  `;
+      msg.style = `
+    position: fixed;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    background: #151528;
+    color: white;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    font-size: 15px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    z-index: 9999;
+  `;
+      document.body.appendChild(msg);
+    }
+
+    // --- Caso seja Android ou Desktop ---
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('📲 beforeinstallprompt detectado!');
+      e.preventDefault();
+      deferredPrompt = e;
+      installButton.style.display = 'block'; // mostra botão
+    });
+
+    // Quando o usuário clicar no botão
+    installButton.addEventListener('click', async () => {
+      installButton.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Resultado da instalação:', outcome);
+        deferredPrompt = null;
+      }
+    });
+
+    // Some automaticamente quando o app for instalado
+    window.addEventListener('appinstalled', () => {
+      console.log('✅ App instalado!');
+      installButton.style.display = 'none';
+      localStorage.setItem('pwa_installed', 'true');
+    });
+
+    // Esconde o botão se já estiver instalado
+    if (localStorage.getItem('pwa_installed') === 'true' || isInStandalone) {
+      installButton.style.display = 'none';
+    }
+  </script>
 
 
   <script src="static/js/iniciar.js"></script>
